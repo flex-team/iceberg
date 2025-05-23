@@ -61,7 +61,13 @@ class IcebergWriter implements RecordWriter {
       // ignore tombstones...
       if (record.value() != null) {
         Record row = convertToRow(record);
-        writer.write(row);
+        String cdcField = config.tablesCdcField();
+        if (cdcField == null) {
+          writer.write(row);
+        } else {
+          Operation op = extractCdcOperation(record.value(), cdcField);
+          writer.write(new RecordWrapper(row, op));
+        }
       }
     } catch (Exception e) {
       throw new DataException(
@@ -95,6 +101,28 @@ class IcebergWriter implements RecordWriter {
     }
 
     return row;
+  }
+
+  private Operation extractCdcOperation(Object recordValue, String cdcField) {
+    Object opValue = RecordUtils.extractFromRecordValue(recordValue, cdcField);
+
+    if (opValue == null) {
+      return Operation.INSERT;
+    }
+
+    String opStr = opValue.toString().trim().toUpperCase();
+    if (opStr.isEmpty()) {
+      return Operation.INSERT;
+    }
+
+    switch (opStr.charAt(0)) {
+      case 'U':
+        return Operation.UPDATE;
+      case 'D':
+        return Operation.DELETE;
+      default:
+        return Operation.INSERT;
+    }
   }
 
   private void flush() {

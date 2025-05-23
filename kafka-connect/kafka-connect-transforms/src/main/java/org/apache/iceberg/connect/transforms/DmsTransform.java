@@ -77,6 +77,8 @@ public class DmsTransform<R extends ConnectRecord<R>> implements Transformation<
     cdcMetadata.put(
         CdcConstants.COL_SOURCE,
         String.format("%s.%s", metadata.get("schema-name"), metadata.get("table-name")));
+    cdcMetadata.put(CdcConstants.COL_SCHEMA, metadata.get("schema-name"));
+    cdcMetadata.put(CdcConstants.COL_TABLE, metadata.get("table-name"));
 
     // create the new value
     Map<String, Object> newValue = Maps.newHashMap((Map<String, Object>) dataObj);

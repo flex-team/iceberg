@@ -16,22 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.iceberg.connect.transforms;
+package org.apache.iceberg.connect.data;
 
-public interface CdcConstants {
-
-  String OP_INSERT = "I";
-  String OP_UPDATE = "U";
-  String OP_DELETE = "D";
-
-  String COL_CDC = "_cdc";
-  String COL_OP = "op";
-  String COL_TS = "ts";
-  String COL_OFFSET = "offset";
-  String COL_SOURCE = "source";
-  String COL_TARGET = "target";
-  String COL_KEY = "key";
-
-  String COL_SCHEMA = "schema";
-  String COL_TABLE = "table";
+public enum Operation {
+  INSERT,
+  UPDATE,
+  DELETE
 }
