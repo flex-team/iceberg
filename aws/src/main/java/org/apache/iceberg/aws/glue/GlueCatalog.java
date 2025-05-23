@@ -192,7 +192,9 @@ public class GlueCatalog extends BaseMetastoreCatalog
 
     this.closeableGroup = new CloseableGroup();
     this.fileIOTracker = new FileIOTracker();
-    closeableGroup.addCloseable(glue);
+    // NOTE: java.lang.IllegalStateException: Connection pool shut down 이슈로 GlueClient는
+    // closableGroup에 포함시키지 않는다.
+    //    closeableGroup.addCloseable(glue);
     closeableGroup.addCloseable(lockManager);
     closeableGroup.addCloseable(metricsReporter());
     closeableGroup.addCloseable(fileIOTracker);
